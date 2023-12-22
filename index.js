@@ -17,17 +17,19 @@ let employeeType;
 
 
 const questions = [
-    // EMPLOYEE QUESTIONS
+    // MANAGER
     "What is the name of your team's manager?",
     "What is your manager's ID?",
     "What is your manager's email address?",
     "What is your manager's office number?",
-    // MANAGER
-    "What is your office number?",
+    //EMPLOYEE
+    "What is your name?", // 4
+    "Whatis your ID?",
+    "What is your email address?",
     // ENGINEER
-    "What is your github username?",
+    "What is your github username?", // 7
     // INTERN
-    "What school did you graduate from?",
+    "What school did you graduate from?", //8
 ];
 
 
@@ -58,27 +60,77 @@ const managerQuestions = () =>
             type: 'list',
             name: 'employee',
             choices: ["Engineer", "Intern", "I don't want to add more employees"]
+        },
+    ]);
+
+
+const employeeQuestions = () =>
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'employee name',
+            message: questions[4]
+        },
+        {
+            type: 'input',
+            name: 'employee id',
+            message: questions[5]
+        },
+        {
+            type: 'input',
+            name: 'employee email',
+            message: questions[6]
         }
     ]);
+
+
+const specifiedQuestions = (num, qName) => {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: qName,
+            message: questions[num]
+        },
+    ]);
+};
+
 
 
 function runApp() {
     managerQuestions()
         .then((answers) => {
             employeeType = answers.employee;
-            // console.log(employeeType);
         })
+        
         .then(() => {
-            if(employeeType === 'Engineer'){
-                console.log("it's an engineer!");
-            } else if (employeeType === "Intern") {
-                console.log("it's an intern!");
-            } else if (employeeType === "I don't want to add more employees") {
+
+            if(employeeType !== "Engineer" && employeeType !== "Intern"){
                 console.log("it's the end");
+                return;
             }
+
+            employeeQuestions()
+                .then(() => {
+
+                    if (employeeType === "Engineer") {
+                        specifiedQuestions(7, "github")
+                            .then((answers) => console.log("eng" + answers));
+                    } else if (employeeType === "Intern") {
+                        specifiedQuestions(8, "school")
+                            .then((answers) => console.log("int" + answers));
+                    } 
+
+                });
         })
+
         .catch((err) => console.log(err));
-}
+};
+
+
+function renderData() {
+    console.log('render');
+};
+
 
 
 
