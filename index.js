@@ -12,6 +12,9 @@ const render = require("./src/page-template.js");
 
 let employeeType;
 
+let manager = "";
+let employee = "";
+
 
 // TODO: Write Code to gather information about the development team members, and render the HTML file.
 
@@ -84,7 +87,7 @@ const employeeQuestions = () =>
     ]);
 
 
-const specifiedQuestions = (num, qName) => {
+const specifiedQuestions = (num, qName) => 
     inquirer.prompt([
         {
             type: 'input',
@@ -92,7 +95,6 @@ const specifiedQuestions = (num, qName) => {
             message: questions[num]
         },
     ]);
-};
 
 
 
@@ -100,27 +102,46 @@ function runApp() {
     managerQuestions()
         .then((answers) => {
             employeeType = answers.employee;
+            const name = answers['manager name'];
+            const id = answers['manager ID'];
+            const email = answers['manager email'];
+            const officeNo = answers['office number'];
+            manager = new Manager(name, id, email, officeNo);
+            console.log(manager);
         })
-        
+
         .then(() => {
 
-            if(employeeType !== "Engineer" && employeeType !== "Intern"){
+            if (employeeType !== "Engineer" && employeeType !== "Intern") {
                 console.log("it's the end");
                 return;
             }
 
             employeeQuestions()
-                .then(() => {
+                .then((answers) => {
+
+                    const name = answers['employee name'];
+                    const id = answers['employee id'];
+                    const email = answers['employee email'];
 
                     if (employeeType === "Engineer") {
                         specifiedQuestions(7, "github")
-                            .then((answers) => console.log("eng" + answers));
+                            .then((answers) => {
+                                const github = answers.github;
+                                employee = new Engineer(name, id, email, github);
+                                console.log(employee);
+                            }
+                            );
                     } else if (employeeType === "Intern") {
                         specifiedQuestions(8, "school")
-                            .then((answers) => console.log("int" + answers));
-                    } 
-
-                });
+                            .then((answers) => {
+                                const school = answers.school;
+                                employee = new Intern(name, id, email, school);
+                                console.log(employee);
+                            });
+                    }
+                })
+                    
         })
 
         .catch((err) => console.log(err));
