@@ -1,0 +1,33 @@
+body {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.team-heading {
+    background-color: #ffbf00;
+    color: rgb(16, 16, 16);
+}
+
+h1 {
+    font-weight: bolder;
+}
+
+.employee-card {
+    width: 300px;
+    margin: 20px; 
+}
+
+.team-area{
+    flex-wrap: wrap;
+}
+
+
+.card-header {
+    background-color: #4682B4;
+    color: aliceblue;
+}
+
+@media (max-width: 768px) {
+    .employee-card {
+        width: 80%;
+    }
+}
