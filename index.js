@@ -129,7 +129,7 @@ function addMember(val) {
 
 function renderData() {
     data = render(team);
-    fs.writeFile("index.html", data, (err) => {
+    fs.writeFile(outputPath, data, (err) => {
         err ? console.error(err) : console.log("File Saved Successfully!");
     });
 }
