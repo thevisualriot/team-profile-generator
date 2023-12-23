@@ -14,207 +14,132 @@ let employeeType;
 
 let manager = "";
 let employee = "";
+let team = [];
 
 
-// TODO: Write Code to gather information about the development team members, and render the HTML file.
-
-
+/* *********************************************************    QUESTIONS   *********************************************************** */
 const questions = [
-    // MANAGER
-    "What is the name of your team's manager?",
-    "What is your manager's ID?",
-    "What is your manager's email address?",
-    "What is your manager's office number?",
-    //EMPLOYEE
-    "What is your name?", // 4
-    "Whatis your ID?",
-    "What is your email address?",
+    {
+        type: 'input',
+        name: 'manager name',
+        message: "What is the name of your team's manager?"
+    },
+    {
+        type: 'input',
+        name: 'manager ID',
+        message: "What is your manager's ID?"
+    },
+    {
+        type: 'input',
+        name: 'manager email',
+        message: "What is your manager's email address?"
+    },
+    {
+        type: 'input',
+        name: 'office number',
+        message: "What is your manager's office number?"
+    },
+    {
+        type: 'list',
+        name: 'employee',
+        choices: ["Add an engineer", "Add an intern", "Finish building the team"]
+    },
+
+    // ALL EMPLOYEES
+    {
+        type: 'input',
+        name: 'employee name',
+        message: "Provide employee's name",
+        when: (answers) => answers.employee !== "Finish building the team"
+    },
+    {
+        type: 'input',
+        name: 'employee id',
+        message: "Provide employee's ID",
+        when: (answers) => answers.employee !== "Finish building the team"
+    },
+    {
+        type: 'input',
+        name: 'employee email',
+        message: "Provide employee's email address",
+        when: (answers) => answers.employee !== "Finish building the team"
+    },
+
     // ENGINEER
-    "What is your github username?", // 7
+    {
+        type: 'input',
+        name: "github",
+        message: "Provide employee's github username",
+        when: (answers) => answers.employee === "Add an engineer"
+    },
+
     // INTERN
-    "What school did you graduate from?", //8
+    {
+        type: 'input',
+        name: "school",
+        message: "Provide name of school of an intern",
+        when: (answers) => answers.employee === "Add an intern"
+    },
 ];
 
+const additionalQuestions = [4, 5, 6, 7, 8, 9];
+const secondaryQuestionaire = additionalQuestions.map((index) => questions[index]);
+
+/* ***********************************************************   FUNCTIONS   *************************************************************** */
 
 
-const managerQuestions = () =>
-    inquirer.prompt([
-        {
-            type: 'input',
-            name: 'manager name',
-            message: questions[0]
-        },
-        {
-            type: 'input',
-            name: 'manager ID',
-            message: questions[1]
-        },
-        {
-            type: 'input',
-            name: 'manager email',
-            message: questions[2]
-        },
-        {
-            type: 'input',
-            name: 'office number',
-            message: questions[3]
-        },
-        {
-            type: 'list',
-            name: 'employee',
-            choices: ["Engineer", "Intern", "I don't want to add more employees"]
-        },
-    ]);
-
-
-const employeeQuestions = () =>
-    inquirer.prompt([
-        {
-            type: 'input',
-            name: 'employee name',
-            message: questions[4]
-        },
-        {
-            type: 'input',
-            name: 'employee id',
-            message: questions[5]
-        },
-        {
-            type: 'input',
-            name: 'employee email',
-            message: questions[6]
-        }
-    ]);
-
-
-const specifiedQuestions = (num, qName) => 
-    inquirer.prompt([
-        {
-            type: 'input',
-            name: qName,
-            message: questions[num]
-        },
-    ]);
-
-
-
-function runApp() {
-    managerQuestions()
+function runQuestionaire(questions, index) {
+    inquirer.prompt(questions.slice(index))
         .then((answers) => {
-            employeeType = answers.employee;
-            const name = answers['manager name'];
-            const id = answers['manager ID'];
-            const email = answers['manager email'];
-            const officeNo = answers['office number'];
-            manager = new Manager(name, id, email, officeNo);
-            console.log(manager);
-        })
-
-        .then(() => {
-
-            if (employeeType !== "Engineer" && employeeType !== "Intern") {
-                console.log("it's the end");
+            if (answers.employee === "Finish building the team") {
                 return;
             }
 
-            employeeQuestions()
-                .then((answers) => {
+            manager = new Manager(answers['manager name'], answers['manager ID'], answers['manager email'], answers['office number'])
+            manager.role = "manager";
+            addMember(manager);
 
-                    const name = answers['employee name'];
-                    const id = answers['employee id'];
-                    const email = answers['employee email'];
+            if(answers.employee === "Add an engineer"){
+                employee = new Engineer(answers['employee name'], answers['employee id'], answers['employee email'], answers['github']);
+                employee.role = "engineer";
+                addMember(employee);
+            } else if (answers.employee === "Add an intern"){
+                employee = new Intern(answers['employee name'], answers['employee id'], answers['employee email'], answers['school']);
+                employee.role = "intern";
+                addMember(employee);
+            }
 
-                    if (employeeType === "Engineer") {
-                        specifiedQuestions(7, "github")
-                            .then((answers) => {
-                                const github = answers.github;
-                                employee = new Engineer(name, id, email, github);
-                                console.log(employee);
-                            }
-                            );
-                    } else if (employeeType === "Intern") {
-                        specifiedQuestions(8, "school")
-                            .then((answers) => {
-                                const school = answers.school;
-                                employee = new Intern(name, id, email, school);
-                                console.log(employee);
-                            });
-                    }
-                })
-                    
+            runQuestionaire(questions, 4);
         })
-
         .catch((err) => console.log(err));
-};
+}
+
+
+/* **************************************************************   LET'S GO BABY!   ********************************************************** */
+
+runQuestionaire(questions, 0)
+
+
+
+
+    
+
+
 
 
 function renderData() {
     console.log('render');
 };
 
+function addMember(val) {
+    team.push(val);
+}
 
 
-
-runApp();
-
+// runApp();
 
 
-
-
-
-// const runQuestion = () =>
-//     inquirer.prompt([
-//         {
-//             type: "input",
-//             name: "name",
-//             message: questions[0]
-//         },
-//         {
-//             type: "input",
-//             name: "email",
-//             message: questions[1]
-//         },
-//         {
-//             type: "input",
-//             name: "title",
-//             message: questions[2],
-//         },
-//         {
-//             type: "input",
-//             name: "description",
-//             message: questions[3],
-//         },
-//         {
-//             type: "input",
-//             name: "installation",
-//             message: questions[4],
-//             default: "nmp installation required"
-//         },
-//         {
-//             type: "input",
-//             name: "usage",
-//             message: questions[5],
-//         },
-//         {
-//             type: "list",
-//             name: "license",
-//             message: questions[6],
-//             choices: ["Apache License 2.0", "Boost", "Creative Commons", "GNU GPL v3", "MIT", "None"],
-//             default: "None"
-//         },
-//         {
-//             type: "input",
-//             name: "contributing",
-//             message: questions[7],
-//         },
-//         {
-//             type: "input",
-//             name: "tests",
-//             message: questions[8],
-//             default: "npm run test"
-//         }
-//     ]);
-
+// render.team();
 
 
 
