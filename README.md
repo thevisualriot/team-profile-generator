@@ -4,7 +4,7 @@ Welcome to the Team Profile Generator repository! This Node.js application simpl
 
 ## 👀 Overview
 
-![Application Demo](./path/to/demo.gif)
+![Application Demo](./assets/application.gif)
 
 ## 📝 Description
 
