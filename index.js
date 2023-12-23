@@ -1,3 +1,5 @@
+/* *********************************************************    VARIABLES   *********************************************************** */
+
 const Manager = require("./lib/Manager");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
@@ -85,6 +87,8 @@ const questions = [
 const additionalQuestions = [4, 5, 6, 7, 8, 9];
 const secondaryQuestionaire = additionalQuestions.map((index) => questions[index]);
 
+
+
 /* ***********************************************************   FUNCTIONS   *************************************************************** */
 
 
@@ -92,12 +96,16 @@ function runQuestionaire(questions, index) {
     inquirer.prompt(questions.slice(index))
         .then((answers) => {
             if (answers.employee === "Finish building the team") {
+                renderData();
                 return;
             }
 
-            manager = new Manager(answers['manager name'], answers['manager ID'], answers['manager email'], answers['office number'])
-            manager.role = "manager";
-            addMember(manager);
+            if(!manager){
+                manager = new Manager(answers['manager name'], answers['manager ID'], answers['manager email'], answers['office number'])
+                manager.role = "manager";
+                addMember(manager);
+            }
+            
 
             if(answers.employee === "Add an engineer"){
                 employee = new Engineer(answers['employee name'], answers['employee id'], answers['employee email'], answers['github']);
@@ -115,6 +123,19 @@ function runQuestionaire(questions, index) {
 }
 
 
+function addMember(val) {
+    team.push(val);
+}
+
+function renderData() {
+    data = render(team);
+    fs.writeFile("index.html", data, (err) => {
+        err ? console.error(err) : console.log("File Saved Successfully!");
+    });
+}
+
+
+
 /* **************************************************************   LET'S GO BABY!   ********************************************************** */
 
 runQuestionaire(questions, 0)
@@ -122,47 +143,14 @@ runQuestionaire(questions, 0)
 
 
 
-    
-
-
-
-
-function renderData() {
-    console.log('render');
-};
-
-function addMember(val) {
-    team.push(val);
-}
-
-
-// runApp();
-
-
-// render.team();
 
 
 
 
 
-// function writeToFile(fileName, data) {
-//     fs.writeFile(fileName, data, (err) => {
-//         err ? console.error(err) : console.log("File Saved Successfully!");
-//     });
-// }
 
 
 
 
-// function to initialize program
-// function init() {
-//     runQuestion()
-//         .then((answers) => writeToFile(filePath, generateMarkdown(answers)))
-//         .then(() => console.log("Generating README..."))
-//         .catch((err) => console.log(err));
-// };
 
-
-// function call to initialize program
-// init();
 
